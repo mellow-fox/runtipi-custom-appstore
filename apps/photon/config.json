@@ -16,6 +16,7 @@
   "website": "https://github.com/komoot/photon",
   "exposable": true,
   "dynamic_config": true,
+  "isMain": true,
   "supported_architectures": [
     "amd64"
   ]}
