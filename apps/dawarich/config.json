@@ -33,7 +33,7 @@
       "type": "random",
       "label": "Password for the postgres DB",
       "env_variable": "POSTGRES_PASSWORD",
-      "min": 32,
+      "min": 32
     },
     {
       "type": "select",
