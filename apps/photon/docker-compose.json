@@ -9,13 +9,7 @@
       },
       "internalPort": 2322,
       "volumes": [
-        {
-          "hostPath": "photon_data",
-          "containerPath": "/photon/photon_data",
-          "readOnly": false,
-          "shared": false,
-          "private": false
-        }
+        { "hostPath": "${APP_DATA_DIR}/photon_data", "containerPath": "/photon/photon_data" },
       ]
     }
   ]
