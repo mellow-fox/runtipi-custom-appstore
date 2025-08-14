@@ -18,7 +18,7 @@
       "image": "postgis/postgis:17-3.5-alpine",
       "environment": {
         "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "password",
+        "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
         "POSTGRES_DB": "dawarich_development"
       },
       "volumes": [
@@ -44,7 +44,7 @@
         "REDIS_URL": "redis://dawarich_redis:6379",
         "DATABASE_HOST": "dawarich_db",
         "DATABASE_USERNAME": "postgres",
-        "DATABASE_PASSWORD": "password",
+        "DATABASE_PASSWORD": "${POSTGRES_PASSWORD}",
         "DATABASE_NAME": "dawarich_development",
         "MIN_MINUTES_SPENT_IN_CITY": "60",
         "APPLICATION_HOSTS": "${APPLICATION_HOSTS}",
@@ -83,7 +83,7 @@
         "REDIS_URL": "redis://dawarich_redis:6379",
         "DATABASE_HOST": "dawarich_db",
         "DATABASE_USERNAME": "postgres",
-        "DATABASE_PASSWORD": "password",
+        "DATABASE_PASSWORD": "${POSTGRES_PASSWORD}",
         "DATABASE_NAME": "dawarich_development",
         "APPLICATION_HOSTS": "${APPLICATION_HOSTS}",
         "BACKGROUND_PROCESSING_CONCURRENCY": "10",
