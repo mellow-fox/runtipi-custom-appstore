@@ -1,54 +1,116 @@
 {
-  "name": "Dawarich",
-  "id": "dawarich",
-  "available": true,
-  "short_desc": "Self hosted alternative to Google Timeline (Location History).",
-  "author": "Freika",
-  "port": 3000,
-  "categories": [
-    "utilities"
-  ],
-  "description": "Dawarich is a self-hosted web app to track and visualize your location history. It supports imports (Google Takeout, OwnTracks, GPX/GeoJSON, Strava, EXIF), live tracking integrations, statistics and trips. Back-end uses PostgreSQL with PostGIS, Redis and Sidekiq.",
-  "tipi_version": 1,
-  "version": "0.30.8",
-  "source": "https://github.com/Freika/dawarich",
-  "website": "https://dawarich.app",
-  "exposable": true,
-  "dynamic_config": true,
-  "supported_architectures": [
-    "amd64",
-    "arm64"
-  ],
-  "form_fields": [
+  "services": [
     {
-      "type": "text",
-      "label": "Time Zone",
-      "env_variable": "TIME_ZONE",
-      "default": "Europe/Zurich",
-      "required": true
-    },
-    {
-      "type": "text",
-      "label": "Application Hosts (comma-separated, no protocol)",
-      "env_variable": "APPLICATION_HOSTS",
-      "default": "localhost",
-      "required": true
-    },
-    {
-      "label": "Application Protocol",
-      "env_variable": "APPLICATION_PROTOCOL",
-      "default": "http",
-      "options": [
-        {
-          "label": "HTTP",
-          "value": "http"
-        },
-        {
-          "label": "HTTPS",
-          "value": "https"
-        }
+      "name": "dawarich_redis",
+      "image": "redis:7.4-alpine",
+      "volumes": [
+        { "hostPath": "${APP_DATA_DIR}/redis", "containerPath": "/data" }
       ],
-      "required": true
+      "healthCheck": {
+        "test": "redis-cli --raw incr ping",
+        "interval": "10s",
+        "retries": 5,
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "dawarich_db",
+      "image": "postgis/postgis:17-3.5-alpine",
+      "environment": {
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
+        "POSTGRES_DB": "dawarich_development"
+      },
+      "volumes": [
+        { "hostPath": "${APP_DATA_DIR}/db", "containerPath": "/var/lib/postgresql/data" },
+        { "hostPath": "${APP_DATA_DIR}/shared", "containerPath": "/var/shared" }
+      ],
+      "healthCheck": {
+        "test": "pg_isready -U postgres -d dawarich_development",
+        "interval": "10s",
+        "retries": 5,
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "dawarich_app",
+      "image": "freikin/dawarich:0.30.8",
+      "isMain": true,
+      "internalPort": 3000,
+      "entrypoint": "web-entrypoint.sh",
+      "command": ["bin/rails", "server", "-p", "3000", "-b", "::"],
+      "environment": {
+        "RAILS_ENV": "development",
+        "REDIS_URL": "redis://dawarich_redis:6379",
+        "DATABASE_HOST": "dawarich_db",
+        "DATABASE_USERNAME": "postgres",
+        "DATABASE_PASSWORD": "${POSTGRES_PASSWORD}",
+        "DATABASE_NAME": "dawarich_development",
+        "MIN_MINUTES_SPENT_IN_CITY": "60",
+        "APPLICATION_HOSTS": "${APPLICATION_HOSTS}",
+        "TIME_ZONE": "${TIME_ZONE}",
+        "APPLICATION_PROTOCOL": "${APPLICATION_PROTOCOL}",
+        "PROMETHEUS_EXPORTER_ENABLED": "false",
+        "PROMETHEUS_EXPORTER_HOST": "0.0.0.0",
+        "PROMETHEUS_EXPORTER_PORT": "9394",
+        "SELF_HOSTED": "true",
+        "STORE_GEODATA": "true"
+      },
+      "volumes": [
+        { "hostPath": "${APP_DATA_DIR}/public", "containerPath": "/var/app/public" },
+        { "hostPath": "${APP_DATA_DIR}/watched", "containerPath": "/var/app/tmp/imports/watched" },
+        { "hostPath": "${APP_DATA_DIR}/storage", "containerPath": "/var/app/storage" },
+        { "hostPath": "${APP_DATA_DIR}/db_backup", "containerPath": "/dawarich_db_data" }
+      ],
+      "healthCheck": {
+        "test": "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'",
+        "interval": "10s",
+        "retries": 30,
+        "timeout": "10s"
+      },
+      "dependsOn": {
+        "dawarich_db": { "condition": "service_healthy" },
+        "dawarich_redis": { "condition": "service_healthy" }
+      }
+    },
+    {
+      "name": "dawarich_sidekiq",
+      "image": "freikin/dawarich:0.30.8",
+      "entrypoint": "sidekiq-entrypoint.sh",
+      "command": ["sidekiq"],
+      "environment": {
+        "RAILS_ENV": "development",
+        "REDIS_URL": "redis://dawarich_redis:6379",
+        "DATABASE_HOST": "dawarich_db",
+        "DATABASE_USERNAME": "postgres",
+        "DATABASE_PASSWORD": "${POSTGRES_PASSWORD}",
+        "DATABASE_NAME": "dawarich_development",
+        "APPLICATION_HOSTS": "${APPLICATION_HOSTS}",
+        "BACKGROUND_PROCESSING_CONCURRENCY": "10",
+        "APPLICATION_PROTOCOL": "${APPLICATION_PROTOCOL}",
+        "PROMETHEUS_EXPORTER_ENABLED": "false",
+        "PROMETHEUS_EXPORTER_HOST": "dawarich_app",
+        "PROMETHEUS_EXPORTER_PORT": "9394",
+        "SELF_HOSTED": "true",
+        "STORE_GEODATA": "true",
+        "TIME_ZONE": "${TIME_ZONE}"
+      },
+      "volumes": [
+        { "hostPath": "${APP_DATA_DIR}/public", "containerPath": "/var/app/public" },
+        { "hostPath": "${APP_DATA_DIR}/watched", "containerPath": "/var/app/tmp/imports/watched" },
+        { "hostPath": "${APP_DATA_DIR}/storage", "containerPath": "/var/app/storage" }
+      ],
+      "healthCheck": {
+        "test": "pgrep -f sidekiq",
+        "interval": "10s",
+        "retries": 30,
+        "timeout": "10s"
+      },
+      "dependsOn": {
+        "dawarich_db": { "condition": "service_healthy" },
+        "dawarich_redis": { "condition": "service_healthy" },
+        "dawarich_app": { "condition": "service_healthy" }
+      }
     }
   ]
 }
