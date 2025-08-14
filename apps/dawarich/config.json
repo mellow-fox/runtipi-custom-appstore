@@ -5,7 +5,9 @@
   "short_desc": "Self hosted alternative to Google Timeline (Location History).",
   "author": "Freika",
   "port": 3000,
-  "categories": ["utilities"],
+  "categories": [
+    "utilities"
+  ],
   "description": "Dawarich is a self-hosted web app to track and visualize your location history. It supports imports (Google Takeout, OwnTracks, GPX/GeoJSON, Strava, EXIF), live tracking integrations, statistics and trips. Back-end uses PostgreSQL with PostGIS, Redis and Sidekiq.",
   "tipi_version": 1,
   "version": "0.30.8",
@@ -13,7 +15,10 @@
   "website": "https://dawarich.app",
   "exposable": true,
   "dynamic_config": true,
-  "supported_architectures": ["amd64", "arm64"],
+  "supported_architectures": [
+    "amd64",
+    "arm64"
+  ],
   "form_fields": [
     {
       "type": "text",
@@ -30,17 +35,19 @@
       "required": true
     },
     {
-      "type": "random",
-      "label": "Password for the postgres DB",
-      "env_variable": "POSTGRES_PASSWORD",
-      "min": 32,
-    },
-    {
-      "type": "select",
       "label": "Application Protocol",
       "env_variable": "APPLICATION_PROTOCOL",
       "default": "http",
-      "options": ["http", "https"],
+      "options": [
+        {
+          "label": "HTTP",
+          "value": "http"
+        },
+        {
+          "label": "HTTPS",
+          "value": "https"
+        }
+      ],
       "required": true
     }
   ]
