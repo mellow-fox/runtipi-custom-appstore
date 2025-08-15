@@ -9,7 +9,7 @@
     "utilities"
   ],
   "description": "Solution built for OpenStreetMap (OSM) data, providing features such as search-as-you-type and reverse geocoding.",
-  "tipi_version": 1,
+  "tipi_version": 2,
   "no_gui": true,
   "version": "0.7.2",
   "source": "https://github.com/rtuszik/photon-docker",
