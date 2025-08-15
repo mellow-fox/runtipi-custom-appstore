@@ -9,7 +9,7 @@
     "utilities"
   ],
   "description": "Dawarich is a self-hosted web app to track and visualize your location history. It supports imports (Google Takeout, OwnTracks, GPX/GeoJSON, Strava, EXIF), live tracking integrations, statistics and trips. Back-end uses PostgreSQL with PostGIS, Redis and Sidekiq.",
-  "tipi_version": 1,
+  "tipi_version": 2,
   "version": "0.30.8",
   "source": "https://github.com/Freika/dawarich",
   "website": "https://dawarich.app",
@@ -39,6 +39,16 @@
       "env_variable": "APPLICATION_HOSTS",
       "default": "localhost",
       "required": true
+    },
+    {
+      "type": "text",
+      "label": "Photon API Host (X.X.X.X:XX)",
+      "env_variable": "PHOTON_API_HOST"
+    },
+    {
+      "type": "boolean",
+      "label": "Tick to use https to reach Photon",
+      "env_variable": "PHOTON_API_USE_HTTPS"
     },
     {      
       "type": "text",
