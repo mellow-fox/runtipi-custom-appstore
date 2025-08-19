@@ -1,0 +1,41 @@
+{
+  "name": "newt",
+  "id": "newt",
+  "available": true,
+  "short_desc": "Connection to a remote network that allows Pangolin to establish a tunnel to that network",
+  "author": "fosrl",
+  "categories": [
+    "utilities"
+  ],
+  "description": "Connection to a remote network that allows Pangolin to establish a tunnel to that network",
+  "tipi_version": 1,
+  "no_gui": true,
+  "version": "1.4.1",
+  "source": "https://github.com/fosrl/newt",
+  "website": "https://github.com/fosrl/newt",
+  "exposable": true,
+  "dynamic_config": true,
+  "isMain": true,
+  "supported_architectures": [
+    "amd64"
+  ],
+  "form_fields": [
+   {
+      "type": "text",
+      "label": "Pangolin https website",
+      "env_variable": "PANGOLIN_ENDPOINT",
+      "required": true
+    },
+    {
+      "type": "text",
+      "label": "NEWT_ID",
+      "env_variable": "NEWT_ID",
+      "required": true
+    },
+    {
+      "type": "text",
+      "label": "NEWT_SECRET",
+      "env_variable": "NEWT_SECRET",
+      "required": true
+    }
+  ]}
