@@ -1,0 +1,21 @@
+{
+  "services": [
+    {
+      "name": "termix",
+      "image": "ghcr.io/lukegus/termix:latest",
+      "environment": {
+        "PORT": "8080"
+      },
+      "internalPort": 8080,
+      "volumes": [
+        {
+          "hostPath": "termix-data",
+          "containerPath": "/app/data",
+          "readOnly": false,
+          "shared": false,
+          "private": false
+        }
+      ]
+    }
+  ]
+}
