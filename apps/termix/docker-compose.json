@@ -3,10 +3,11 @@
     {
       "name": "termix",
       "image": "ghcr.io/lukegus/termix:latest",
+      "internalPort": 8080,
+      "isMain": true,
       "environment": {
         "PORT": "8080"
       },
-      "internalPort": 8080,
       "volumes": [
         {
           "hostPath": "${APP_DATA_DIR}/termix-data",
