@@ -9,7 +9,7 @@
       "internalPort": 8080,
       "volumes": [
         {
-          "hostPath": "termix-data",
+          "hostPath": "${APP_DATA_DIR}/termix-data",
           "containerPath": "/app/data",
           "readOnly": false,
           "shared": false,
