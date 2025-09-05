@@ -9,8 +9,8 @@
     "utilities"
   ],
   "description": "clientless web-based server management platform with SSH terminal, tunneling, and file editing capabilities",
-  "tipi_version": 1,
-  "version": "1.3.0",
+  "tipi_version": 2,
+  "version": "1.5.0",
   "source": "https://github.com/LukeGus/Termix",
   "website": "https://docs.termix.site",
   "exposable": true,
