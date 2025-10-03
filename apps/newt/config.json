@@ -10,7 +10,7 @@
   "description": "Connection to a remote network that allows Pangolin to establish a tunnel to that network",
   "tipi_version": 1,
   "no_gui": true,
-  "version": "1.4.1",
+  "version": "1.5.1",
   "source": "https://github.com/fosrl/newt",
   "website": "https://github.com/fosrl/newt",
   "exposable": true,
